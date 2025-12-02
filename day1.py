@@ -27,19 +27,22 @@ def password_finder(input: list[str], mod: int = 99, protocol: int = 0):
     for instruction in input:
         instruction_numeric = int(instruction.replace("R", "+").replace("L", "-"))
         if protocol:
-            rotations = (next_number + instruction_numeric) // (mod + 1)
+            rotations = (instruction_numeric) // (mod + 1)
+            rotations += 0 if rotations >= 0 else 1
             solution += abs(rotations)
-            print(f"{rotations=}, {next_number=}")
+            prev_number = next_number
 
         next_number = dial[(next_number + instruction_numeric) % (mod + 1)]
 
-        if protocol and (rotations < 0) and next_number == 0:
-            solution -= 1
-
-        if next_number == 0 and not protocol:
+        if protocol:
+            
+            cross_right = (next_number < prev_number) and (instruction_numeric > 0)
+            cross_left = (next_number > prev_number) and (instruction_numeric < 0)
+            cross = (cross_right or cross_left) and (prev_number != 0) and (next_number != 0)
+            solution += 0 if (not cross or (prev_number == 0)) else 1
+        if next_number == 0:
             solution += 1
 
-    print(solution)
     return solution
 
 
