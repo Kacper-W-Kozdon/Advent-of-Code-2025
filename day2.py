@@ -62,12 +62,12 @@ def generate_sequences_for_factor(test_number: str, bottom_limit: str, top_limit
             num_digits += 1
 
 
-def find_sequences(input: list[str], factor: int | None = None) -> list[int]:
+def find_sequences(input_: list[str], factor: int | None = None) -> list[int]:
 
     sequences: list[int] = []
 
-    bottom_limit = input[0]
-    top_limit = input[1]
+    bottom_limit = input_[0]
+    top_limit = input_[1]
 
     test_number = bottom_limit
 
@@ -80,11 +80,11 @@ def find_sequences(input: list[str], factor: int | None = None) -> list[int]:
     return sequences
 
 
-def find_sum_sequences(input: list[list[str]], factor: int | None = None) -> int:
+def find_sum_sequences(input_: list[list[str]], factor: int | None = None) -> int:
     solution = 0
     all_sequences = set()
 
-    for item in input:
+    for item in input_:
         list_sequences: list[int] = find_sequences(item, factor)
         # print(f"{list_sequences=}")
         all_sequences.update(set(list_sequences))
@@ -96,10 +96,10 @@ def find_sum_sequences(input: list[list[str]], factor: int | None = None) -> int
 
 
 def main():
-    test_input = load_files("test2.txt")
+    test_input_ = load_files("test2.txt")
     data = load_files("data2.txt")
     
-    test_solution = find_sum_sequences(test_input, factor=2)
+    test_solution = find_sum_sequences(test_input_, factor=2)
 
     if test_solution != 1227775554:
         raise ValueError(f"Expected value: 1227775554. Got {test_solution=}.")
@@ -108,7 +108,7 @@ def main():
 
     print(f"First {solution=}")
 
-    test_solution = find_sum_sequences(test_input)
+    test_solution = find_sum_sequences(test_input_)
 
     if test_solution != 4174379265:
         raise ValueError(f"Expected value: 4174379265. Got {test_solution=}, {len("4174379265"), len(str(test_solution))=}.")
