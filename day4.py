@@ -72,7 +72,6 @@ def forklift_single_run(input_data: list[str], updated_input: list[str], max_rol
     return solution
 
 
-
 def direct_forklift(input_data: list[str], max_rolls: int | None = None, repeat: bool = False) -> int:
     if max_rolls is None:
         max_rolls = 4
