@@ -77,8 +77,6 @@ def direct_forklift(input_data: list[str], max_rolls: int | None = None, repeat:
     if max_rolls is None:
         max_rolls = 4
 
-    # print(f"{input_data=}")
-
     solution = 0
 
     updated_input: list[str] = []
@@ -87,11 +85,10 @@ def direct_forklift(input_data: list[str], max_rolls: int | None = None, repeat:
     
     if not repeat:
         return solution
-
+    
     while (updated_input != input_data) and (solution != (len(input_data) * len(input_data[0]))):
         input_data = copy.copy(updated_input)
-        # print(f"{input_data=}")
-        updated_input = []
+        updated_input.clear()
         solution += forklift_single_run(input_data, updated_input, max_rolls)
 
     return solution
