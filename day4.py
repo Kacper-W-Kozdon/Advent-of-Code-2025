@@ -1,8 +1,25 @@
 import pathlib
-from typing import Generator
+from typing import Generator, Callable
 import copy
+import time
+from functools import wraps
 
 
+def timing(fun) -> Callable:
+    @wraps(fun)
+    def outer(*args, **kwargs):
+        start = time.perf_counter()
+        ret = fun(*args, **kwargs)
+        end = time.perf_counter()
+        duration = end - start
+        if duration >= 0.05:
+            print(f"---The execution of {fun.__name__=} {duration=}.---")
+        return ret
+
+    return outer
+
+
+@timing
 def load_files(file_name):
     file_path = f"{pathlib.Path(__file__).parent}\\{file_name}"
     fContent = []
@@ -15,6 +32,7 @@ def load_files(file_name):
     return fContent
 
 
+@timing
 def process_row(rows: list[list[str]], max_rolls: int) -> tuple[int, list[str]]:
     # print(f"{rows=}")
 
@@ -53,6 +71,7 @@ def process_row(rows: list[list[str]], max_rolls: int) -> tuple[int, list[str]]:
     return ret, new_row
 
 
+@timing
 def forklift_single_run(input_data: list[str], updated_input: list[str], max_rolls: int) -> int:
     solution = 0
     adjacent_rows: list[list[str]] = []
