@@ -80,5 +80,6 @@ def main():
 
     print(f"The second problem's {solution=}.")
 
+
 if __name__ == "__main__":
     main()
