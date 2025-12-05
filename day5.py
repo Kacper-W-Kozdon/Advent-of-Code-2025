@@ -54,21 +54,24 @@ def find_fresh_ranges(ranges) -> int:
     print(f"{fresh_ids=}")
 
     for index, id in enumerate(fresh_ids):
-        old_start = start
-        old_stop = stop
 
         if index == 0:
             start = id[0]
+            update_start: bool = False
+            update_stop: bool = True
             continue
-
-        start = id[0] if ((id[1] == "start") and (start < stop)) else start
         
-        stop = id[0] if ((id[1] == "stop") and (start >= stop)) else stop
-        print(f"{old_start, old_stop=}")
+        print(f"{id, update_start, update_stop=}")
+        start, update_stop = (id[0], not update_start) if (id[1] == "start" and not update_stop) else (start, update_stop)
+        stop, update_stop = (id[0], update_stop) if (id[1] == "stop") else (stop, update_start)
+            
         print(f"{start, stop=}")
 
-        if start > old_start and stop > old_stop:
+        if not update_stop:
             new_ranges.append(range(start, stop))
+
+    ranges_set = set(new_ranges)
+    print(f"{ranges_set=}")
 
     solution = sum([len(range) for range in new_ranges])
     return solution
