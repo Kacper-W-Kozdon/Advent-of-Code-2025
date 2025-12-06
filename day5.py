@@ -51,27 +51,32 @@ def find_fresh_ranges(ranges) -> int:
         fresh_ids.extend([(id_range.start, "start"), (id_range.stop, "stop")])
 
     fresh_ids.sort(key=lambda id_: id_[0])
-    print(f"{fresh_ids=}")
 
-    for index, id in enumerate(fresh_ids):
+    update_stop: int = 0
+
+    for index, item_id in enumerate(fresh_ids):
 
         if index == 0:
-            start = id[0]
-            update_start: bool = False
-            update_stop: bool = True
+            start = item_id[0]
+            update_stop += 1
             continue
         
-        print(f"{id, update_start, update_stop=}")
-        start, update_stop = (id[0], not update_start) if (id[1] == "start" and not update_stop) else (start, update_stop)
-        stop, update_stop = (id[0], update_stop) if (id[1] == "stop") else (stop, update_start)
-            
-        print(f"{start, stop=}")
-
-        if not update_stop:
+        if not update_stop and (item_id[1] == "start"):
             new_ranges.append(range(start, stop))
+            start = item_id[0]
+            update_stop += 1
+            continue
 
-    ranges_set = set(new_ranges)
-    print(f"{ranges_set=}")
+        if item_id[1] == "start":
+            update_stop += 1
+            continue
+        
+        if (item_id[1] == "stop"):
+            stop = item_id[0]
+            update_stop -= 1
+            continue
+            
+    new_ranges.append(range(start, stop))
 
     solution = sum([len(range) for range in new_ranges])
     return solution
