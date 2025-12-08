@@ -32,7 +32,14 @@ def load_files(file_name):
     return fContent
 
 
-def project_beams(input_data: list[str]) -> int:
+def update_slice_scan(slice_scan: list[str], slice_line: str) -> None:
+
+
+
+    raise NotImplementedError
+
+
+def project_beams(input_data: list[str], reverse: bool = False) -> int:
     splitter = "^"
     beam = "|"
     empty = "."
@@ -58,6 +65,47 @@ def project_beams(input_data: list[str]) -> int:
                 new_beam_right = min(pixel_index + 1, line_len)
 
                 scan_line[new_beam_left: new_beam_right + 1] = [beam, splitter, beam][new_beam_left - (pixel_index - 1): 3 - ((pixel_index + 1) - new_beam_right)]
+    
+    if not reverse:
+        return solution
+    
+    returning_beam_indices: list[int] = []
+    num_returning_beams: int = 0
+
+    num_returning_beams = scan_line.count("|")
+
+    solution_list: list[int] = [1 for _ in range(num_returning_beams)]
+    
+
+    last_beam_index: int = 0
+    for _ in range(num_returning_beams):
+        returning_beam_indices.append(scan_line[last_beam_index:].index("|"))
+        last_beam_index += 1
+    
+    beam_slices: list[slice] = [slice(index, index + 1) for index in returning_beam_indices]
+
+    input_data = input_data[::-1]
+    scan_line_reverse = copy.copy(scan_line)
+    
+    for index, line in enumerate(input_data):
+        
+        break_condition = len(returning_beam_indices) - 1
+
+        for counter, pixel_index in enumerate(returning_beam_indices):
+
+            slice_scan = scan_line_reverse[beam_slices[counter]]
+            beams_in_slice = slice_scan.count("|")
+            slice_line = line[beam_slices[counter]]
+
+            update_slice_scan(slice_scan, slice_line)
+
+            if beams_in_slice > slice_scan.count("|"):
+                solution_list[counter] *= 2
+
+            if counter == break_condition:
+                break
+
+    solution = sum(solution_list)
     return solution
 
 
@@ -74,6 +122,14 @@ def main():
 
     print(f"The first problem's {solution=}.")
 
+    test_solution = project_beams(test_data, reverse=True)
+    
+    if test_solution != 40:
+        raise ValueError(f"Expected solution: 40. Got {test_solution=}")
+
+    solution = project_beams(input_data, reverse=True)
+
+    print(f"The second problem's {solution=}.")
 
 if __name__ == "__main__":
     main()
