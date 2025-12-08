@@ -85,9 +85,9 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
     beam_slices: list[slice] = [slice(index, index + 1) for index in returning_beam_indices]
 
     input_data = input_data[::-1]
-    scan_line_reverse = copy.copy(scan_line)
 
     for counter, pixel_index in enumerate(returning_beam_indices):
+        scan_line_reverse: list[str] = ["|" if idx == pixel_index else "." for idx in range(len(input_data[0]))]
         
         break_condition = len(returning_beam_indices) - 1
 
@@ -99,13 +99,10 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
 
             update_slice_scan(slice_scan, slice_line)
 
-            if beams_in_slice > slice_scan.count("|"):
-                solution_list[counter] *= 2
-
             if counter == break_condition:
                 break
 
-    solution = sum(solution_list)
+        solution += scan_line_reverse[input_data[-1].index("S")].count("|")
     return solution
 
 
