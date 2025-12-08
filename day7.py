@@ -34,7 +34,8 @@ def load_files(file_name):
 
 def update_slice_scan(slice_scan: list[str], slice_line: str) -> None:
 
-
+    for index in range(len(slice_scan)):
+        pass
 
     raise NotImplementedError
 
@@ -65,7 +66,8 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
                 new_beam_right = min(pixel_index + 1, line_len)
 
                 scan_line[new_beam_left: new_beam_right + 1] = [beam, splitter, beam][new_beam_left - (pixel_index - 1): 3 - ((pixel_index + 1) - new_beam_right)]
-    
+        line = "".join(scan_line)
+
     if not reverse:
         return solution
     
@@ -94,7 +96,6 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
         for index, line in enumerate(input_data):
 
             slice_scan = scan_line_reverse[beam_slices[counter]]
-            beams_in_slice = slice_scan.count("|")
             slice_line = line[beam_slices[counter]]
 
             update_slice_scan(slice_scan, slice_line)
