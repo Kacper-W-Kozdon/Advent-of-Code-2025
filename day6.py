@@ -39,29 +39,55 @@ class Math_Problems():
         self.puzzles = self.preprocess(input_data)
 
     @timing
-    def solve_puzzles(self) -> int:
+    def solve_puzzles(self, cephalopod: bool = False) -> int:
 
         solution: int = 0
-
+        # print(f"{self.puzzles=}")
         for puzzle in self.puzzles:
+            if cephalopod:
+                puzzle = self.update(puzzle)
+                # print(f"{puzzle=}")
+
             solution += int(eval(puzzle))
 
         return solution
+
+    def update(self, puzzle: str) -> str:
+        updated_puzzle: str = ""
+        
+        symbol: str = "*" if "*" in puzzle else "+"
+
+        numbers: list[str] = puzzle.split(symbol)
+
+        num_digits = len(max(numbers, key=len))
+
+        for digit in range(num_digits):
+            updated_puzzle += "".join([number[digit] for number in numbers]) + symbol
+
+        return updated_puzzle[:-1]
 
     @classmethod
     def preprocess(cls, input_data: list[str]) -> list[str]:
 
         collapsed_puzzle_inputs: list[str] = []
+        number_digits = len(input_data[0])
         symbols: list[str] = input_data[-1].split()
+        symbol_index = 0
+        last_space = 0
 
-        for index, puzzle_inputs in enumerate(input_data[:-1]):
-            
-            if index == 0:
-                collapsed_puzzle_inputs = [number for number in puzzle_inputs.split()]
+        for digit_index in range(number_digits):
+
+            if not all([row[digit_index].isspace() for row in input_data[:-1]]):
                 continue
+            
+            symbol = symbols[symbol_index]
+            collapsed_puzzle_inputs.append("".join([row[last_space: digit_index] + symbol for row in input_data[:-1]])[:-1])
 
-            collapsed_puzzle_inputs = [f"{collapsed_puzzle_inputs[number_idx]} {symbols[number_idx]} {number}" for number_idx, number in enumerate(puzzle_inputs.split())]
-
+            last_space = digit_index + 1 
+            symbol_index += 1
+        
+        symbol = symbols[symbol_index]
+        collapsed_puzzle_inputs.append("".join([row[last_space:] + symbol for row in input_data[:-1]])[:-1])
         return collapsed_puzzle_inputs
 
 
@@ -81,6 +107,15 @@ def main():
     solution = puzzles.solve_puzzles()
 
     print(f"The first problem's {solution=}.")
+
+    test_solution = test_puzzles.solve_puzzles(cephalopod=True)
+
+    if test_solution != 3263827:
+        raise ValueError(f"Expected solution: 3263827. Got {test_solution=}.")
+    
+    solution = puzzles.solve_puzzles(cephalopod=True)
+
+    print(f"The second problem's {solution=}.")
 
 
 if __name__ == "__main__":
