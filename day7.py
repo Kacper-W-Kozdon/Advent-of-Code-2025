@@ -39,12 +39,15 @@ def update_slice_scan(slice_scan: list[str], slice_line: str, next_slice_line: s
 
     for pixel_index in range(line_len):
             
-        if (slice_scan[pixel_index] == beam) and (slice_line[pixel_index]) == beam:
+        if (beam in slice_scan[pixel_index]) and (slice_line[pixel_index]) == beam:
 
             new_beam_left = max(0, pixel_index - 1)
             new_beam_right = min(pixel_index + 1, line_len)
 
-            slice_scan[new_beam_left: new_beam_right + 1] = next_slice_line[new_beam_left: new_beam_right + 1]
+            slice_scan[new_beam_left] += next_slice_line[new_beam_left].replace(empty, "").replace(splitter, "")
+            slice_scan[new_beam_right] += next_slice_line[new_beam_right].replace(empty, "").replace(splitter, "")
+
+            slice_scan[pixel_index] = next_slice_line[pixel_index]
 
         if (slice_scan[pixel_index] == beam) and (slice_line[pixel_index]) == splitter:
             slice_scan[pixel_index] = next_slice_line[pixel_index]
