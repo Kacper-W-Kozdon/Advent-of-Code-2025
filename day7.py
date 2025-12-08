@@ -86,12 +86,12 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
 
     input_data = input_data[::-1]
     scan_line_reverse = copy.copy(scan_line)
-    
-    for index, line in enumerate(input_data):
+
+    for counter, pixel_index in enumerate(returning_beam_indices):
         
         break_condition = len(returning_beam_indices) - 1
 
-        for counter, pixel_index in enumerate(returning_beam_indices):
+        for index, line in enumerate(input_data):
 
             slice_scan = scan_line_reverse[beam_slices[counter]]
             beams_in_slice = slice_scan.count("|")
