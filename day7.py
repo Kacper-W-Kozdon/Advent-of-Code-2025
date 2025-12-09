@@ -49,11 +49,11 @@ def update_slice_scan(slice_scan: list[str], slice_line: str, next_slice_line: s
 
             slice_scan[pixel_index] = next_slice_line[pixel_index]
 
-        if (slice_scan[pixel_index] == beam) and (slice_line[pixel_index]) == splitter:
+        if (beam in slice_scan[pixel_index]) and (slice_line[pixel_index]) == splitter:
             slice_scan[pixel_index] = next_slice_line[pixel_index]
             pass
 
-    raise NotImplementedError
+    # raise NotImplementedError
 
 
 def project_beams(input_data: list[str], reverse: bool = False) -> int:
