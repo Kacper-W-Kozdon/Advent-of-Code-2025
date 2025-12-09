@@ -32,30 +32,6 @@ def load_files(file_name):
     return fContent
 
 
-def update_slice_scan(slice_scan: list[str], slice_line: str, next_slice_line: str, symbols: list[str]) -> None:
-    splitter, beam, empty, start = tuple(symbols)
-
-    line_len = len(slice_scan)
-
-    for pixel_index in range(line_len):
-            
-        if (beam in slice_scan[pixel_index]) and (slice_line[pixel_index]) == beam:
-
-            new_beam_left = max(0, pixel_index - 1)
-            new_beam_right = min(pixel_index + 1, line_len - 1)
-
-            slice_scan[new_beam_left] += next_slice_line[new_beam_left].replace(empty, "").replace(splitter, "")
-            slice_scan[new_beam_right] += next_slice_line[new_beam_right].replace(empty, "").replace(splitter, "")
-
-            slice_scan[pixel_index] = next_slice_line[pixel_index]
-
-        if (beam in slice_scan[pixel_index]) and (slice_line[pixel_index]) == splitter:
-            slice_scan[pixel_index] = next_slice_line[pixel_index]
-            pass
-
-    # raise NotImplementedError
-
-
 def project_beams(input_data: list[str], reverse: bool = False) -> int:
     splitter = "^"
     beam = "|"
@@ -113,50 +89,26 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
         return solution
     
     solution = 0
-    
-    returning_beam_indices: list[int] = []
-    num_returning_beams: int = 0
 
-    num_returning_beams = scan_line.count("|")
-
-    solution_list: list[int] = [1 for _ in range(num_returning_beams)]
+    reverse_scan_line: list[int] = [1 for _ in range(len(input_data[0]))]
     
-
-    last_beam_index: int = 0
-    for _ in range(len(input_data[-1])):
-        try:
-            returning_beam_indices.append(input_data[-1][last_beam_index:].index(beam) + last_beam_index)
-        except ValueError:
-            pass
-        last_beam_index = returning_beam_indices[-1] + 1
-    
-    beam_slices: list[slice] = [slice(index, index + 1) for index in returning_beam_indices]
-    print(f"{returning_beam_indices=}")
     input_data = input_data[::-1]
 
-    for counter, pixel_index in enumerate(returning_beam_indices):
-        scan_line_reverse: list[str] = ["|" if idx == pixel_index else "." for idx in range(len(input_data[0]))]
-        
-        break_condition = len(returning_beam_indices)
+    for line in input_data:
+        # print(f"{reverse_scan_line=}")
+        for pixel_index, pixel in enumerate(line):
+            if pixel == start:
+                pixel = beam
+            left_pixel = max(0, pixel_index - 1)
+            right_pixel = min(len(line), pixel_index + 1)
 
-        for index, line in enumerate(input_data):
-            beam_slices[counter] = slice(max(0, beam_slices[counter].start - 1), min(beam_slices[counter].stop + 1, line_len))
-            slice_scan = scan_line_reverse[beam_slices[counter]]
-            slice_line = line[beam_slices[counter]]
-            next_slice_line = input_data[index + 1][beam_slices[counter]]
+            if pixel == splitter:
+                reverse_scan_line[pixel_index] = line[left_pixel].count(beam) * reverse_scan_line[left_pixel] + line[right_pixel].count(beam) * reverse_scan_line[right_pixel]
 
-            # print(f"{slice_scan=}")
-            # print(f"{next_slice_line=}")
-            update_slice_scan(slice_scan, slice_line, next_slice_line, [splitter, beam, empty, start])
-            
-            scan_line_reverse[beam_slices[counter]] = slice_scan
-            if start in input_data[index + 1]:
-                break
+            else:
+                reverse_scan_line[pixel_index] = pixel.count(beam) * reverse_scan_line[pixel_index]
 
-        if counter == break_condition:
-            break
-        
-        solution += scan_line_reverse[input_data[-1].index("S")].count("|")
+    solution = sum(reverse_scan_line)
     return solution
 
 
