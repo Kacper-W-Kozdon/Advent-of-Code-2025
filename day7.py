@@ -42,7 +42,7 @@ def update_slice_scan(slice_scan: list[str], slice_line: str, next_slice_line: s
         if (beam in slice_scan[pixel_index]) and (slice_line[pixel_index]) == beam:
 
             new_beam_left = max(0, pixel_index - 1)
-            new_beam_right = min(pixel_index + 1, line_len)
+            new_beam_right = min(pixel_index + 1, line_len - 1)
 
             slice_scan[new_beam_left] += next_slice_line[new_beam_left].replace(empty, "").replace(splitter, "")
             slice_scan[new_beam_right] += next_slice_line[new_beam_right].replace(empty, "").replace(splitter, "")
