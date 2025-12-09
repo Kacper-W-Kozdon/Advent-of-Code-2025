@@ -83,9 +83,36 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
 
                 scan_line[new_beam_left: new_beam_right + 1] = [beam, splitter, beam][new_beam_left - (pixel_index - 1): 3 - ((pixel_index + 1) - new_beam_right)]
         line = "".join(scan_line)
+        
 
+        splitter_idx = 0
+        # print(f"{line=}")
+        if index == 0:
+            continue
+
+        for _ in range(line.count(splitter)):
+            # print(f"{splitter_idx=}")
+            splitter_idx = line[splitter_idx:].find(splitter)
+            if (input_data[index - 1][splitter_idx] == splitter) and (input_data[index][splitter_idx] != splitter):
+                
+                line = line[:splitter_idx] + line[splitter_idx:].replace(splitter, empty, 1)
+                splitter_idx += 1
+                # pass
+            else:
+                # line = line[:splitter_idx] + line[splitter_idx:].replace(splitter, empty, 1)
+                splitter_idx += 1
+                # print(f"{line=}")
+
+            pass
+        # print(f"{line=}")
+
+        input_data[index] = line
+    # for line in input_data:
+    #     print(line)
     if not reverse:
         return solution
+    
+    solution = 0
     
     returning_beam_indices: list[int] = []
     num_returning_beams: int = 0
@@ -115,7 +142,10 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
             slice_line = line[beam_slices[counter]]
             next_slice_line = input_data[index + 1][beam_slices[counter]]
 
+            # print(f"{slice_scan=}")
+            # print(f"{next_slice_line=}")
             update_slice_scan(slice_scan, slice_line, next_slice_line, [splitter, beam, empty, start])
+            
             scan_line_reverse[beam_slices[counter]] = slice_scan
 
             if start in input_data[index + 1]:
@@ -123,7 +153,8 @@ def project_beams(input_data: list[str], reverse: bool = False) -> int:
 
         if counter == break_condition:
             break
-
+        
+        # print(f"{scan_line_reverse=}")
         solution += scan_line_reverse[input_data[-1].index("S")].count("|")
     return solution
 
